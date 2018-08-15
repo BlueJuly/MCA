@@ -8,7 +8,8 @@ import {
   Image,
   ImageBackground,
   Text,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import LoginForm from './LoginForm';
 const LOGO_IMAGE = require('../assets/images/logo_1024px.png');
@@ -16,7 +17,7 @@ const LOGO_IMAGE = require('../assets/images/logo_1024px.png');
 class login extends Component {
   render() {
     return (
-      <	KeyboardAvoidingView behavior = 'padding' style = {styles.container} >
+      <	KeyboardAvoidingView behavior= {(Platform.OS === 'ios')? "padding" : null} style = {styles.container} >
         <View style = {styles.logoContainer}>
           <ImageBackground 
             source={LOGO_IMAGE} 
@@ -41,8 +42,8 @@ const styles = StyleSheet.create({
   },
 
   logoContainer:{
+    flex: 1,
     alignItems: 'center',
-    flexGrow: 1,
     justifyContent: 'center'  
   },
   logo:{
@@ -53,6 +54,9 @@ const styles = StyleSheet.create({
     marginTop:20,
     fontSize:40,
     color:'#2089dc'
+  },
+  formContainer:{
+    flex:1
   }
 });
 

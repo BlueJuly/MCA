@@ -120,9 +120,10 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
 	container:{
-		marginBottom: 150,
+		marginBottom: 120,
+		marginTop:60,
 		alignItems: 'center',
-    	justifyContent: 'center'
+    justifyContent: 'center'
 	},
 	input:{
 		height: 50,
