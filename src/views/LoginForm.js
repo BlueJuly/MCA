@@ -23,6 +23,8 @@ class LoginForm extends Component {
 		};
 	}
 	componentDidMount(){
+		console.log("props in LoginForm are");
+    console.log(this.props);
 		this._loadInitialState().done();
 	}
 	_loadInitialState = async()=>{
@@ -94,7 +96,11 @@ class LoginForm extends Component {
 			try {
 				const savePwd = await Keychain.setGenericPassword(resJson.username, resJson.token);
 				console.log(savePwd);
+				console.log("the props are");
+				console.log(this.props);
+				this.props.navigation.navigate('Homepage');
 			} catch (error) {
+				alert("save password faild");
 				console.log('Save password failed');
 				console.log(error);
 			}

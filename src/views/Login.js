@@ -15,11 +15,20 @@ import LoginForm from './LoginForm';
 const LOGO_IMAGE = require('../assets/images/logo_1024px.png');
 
 class login extends Component {
+  constructor(props){
+    super(props);
+  }
+
+  componentDidMount(){
+    // this._loadInitialState().done();
+    console.log("props in Login are");
+    console.log(this.props);
+	}
   render() {
     return (
       <	KeyboardAvoidingView behavior= {(Platform.OS === 'ios')? "padding" : null} style = {styles.container} >
         <View style = {styles.logoContainer}>
-          <ImageBackground 
+          <Image 
             source={LOGO_IMAGE} 
             style = {styles.logo}
           />
@@ -28,7 +37,7 @@ class login extends Component {
           </Text>
         </View>
         <View style = {styles.formContainer}>
-          <LoginForm />
+          <LoginForm {...this.props}/>
         </View>
       </KeyboardAvoidingView>
     );
