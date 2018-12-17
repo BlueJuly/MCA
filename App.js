@@ -11,6 +11,7 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
 import Login from './src/views/Login';
 import Homepage from './src/views/Homepage';
+import RCTWebRTCDemo from './src/views/RCTWebRTCDemo';
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
@@ -25,6 +26,9 @@ const Application = createStackNavigator(
     },
     Homepage:{
       screen:Homepage
+    },
+    RCTWebRTCDemo: {
+      screen: RCTWebRTCDemo
     }
   },
   {

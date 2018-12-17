@@ -18,8 +18,7 @@ class LoginForm extends Component {
 		super(props);
 		this.state =  { 
 			username: '',
-			password: '',
-			biometryType: null
+			password: ''
 		};
 	}
 	componentDidMount(){
@@ -77,50 +76,51 @@ class LoginForm extends Component {
 	login = async () =>{
 		console.log(this.props);
 		console.log("***************");
-		console.log(this.state)
-		try {
-			let res = await fetch('http://192.168.0.15:4040/api/auth/login', {
-				method: 'POST',
-				headers: {
-				  Accept: 'application/json',
-				  'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-				  username: this.state.username,
-				  password: this.state.password,
-				}),
-			  });
-			let resJson = await res.json();
-			console.log(res)
-			console.log(resJson);
-			try {
-				const savePwd = await Keychain.setGenericPassword(resJson.username, resJson.token);
-				console.log(savePwd);
-				console.log("the props are");
-				console.log(this.props);
-				this.props.navigation.navigate('Homepage');
-			} catch (error) {
-				alert("save password faild");
-				console.log('Save password failed');
-				console.log(error);
-			}
+		console.log(this.state);
+		this.props.navigation.navigate('RCTWebRTCDemo');
+		// try {
+		// 	let res = await fetch('http://192.168.0.21:4040/api/auth/login', {
+		// 		method: 'POST',
+		// 		headers: {
+		// 		  Accept: 'application/json',
+		// 		  'Content-Type': 'application/json',
+		// 		},
+		// 		body: JSON.stringify({
+		// 		  username: this.state.username,
+		// 		  password: this.state.password,
+		// 		}),
+		// 	  });
+		// 	let resJson = await res.json();
+		// 	console.log(res)
+		// 	console.log(resJson);
+		// 	try {
+		// 		const savePwd = await Keychain.setGenericPassword(resJson.username, resJson.token);
+		// 		console.log(savePwd);
+		// 		console.log("the props are");
+		// 		console.log(this.props);
+		// 		this.props.navigation.navigate('Homepage');
+		// 	} catch (error) {
+		// 		alert("save password faild");
+		// 		console.log('Save password failed');
+		// 		console.log(error);
+		// 	}
 			
-			try {
-				// Retreive the credentials
-				const credentials = await Keychain.getGenericPassword();
-				if (credentials) {
-				  console.log('Credentials successfully loaded for user ' + credentials.username);
-				} else {
-				  console.log('No credentials stored')
-				}
-			  } catch (error) {
-				console.log('Keychain couldn\'t be accessed!', error);
-			  }
-			  await Keychain.resetGenericPassword();
+		// 	try {
+		// 		// Retreive the credentials
+		// 		const credentials = await Keychain.getGenericPassword();
+		// 		if (credentials) {
+		// 		  console.log('Credentials successfully loaded for user ' + credentials.username);
+		// 		} else {
+		// 		  console.log('No credentials stored')
+		// 		}
+		// 	  } catch (error) {
+		// 		console.log('Keychain couldn\'t be accessed!', error);
+		// 	  }
+		// 	  await Keychain.resetGenericPassword();
 
-		} catch (error) {
+		// } catch (error) {
 			
-		}
+		// }
 	}
 }
 
