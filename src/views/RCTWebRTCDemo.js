@@ -14,7 +14,6 @@ import {
 
 import io from 'socket.io-client';
 
-const socket = io.connect('https://react-native-webrtc.herokuapp.com', {transports: ['websocket']});
 
 import {
   RTCPeerConnection,
@@ -30,7 +29,7 @@ const configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 
 const pcPeers = {};
 let localStream;
-
+var container;
 function getLocalStream(isFront, callback) {
 
   let videoSourceId;
@@ -58,7 +57,7 @@ function getLocalStream(isFront, callback) {
         minFrameRate: 30,
       },
       facingMode: (isFront ? "user" : "environment"),
-      optional: (videoSourceId ? [{sourceId: videoSourceId}] : []),
+      //optional: (videoSourceId ? [{sourceId: videoSourceId}] : []),
     }
   }, function (stream) {
     console.log('getUserMedia success', stream);
@@ -201,21 +200,7 @@ function leave(socketId) {
   container.setState({info: 'One peer leave!'});
 }
 
-socket.on('exchange', function(data){
-  exchange(data);
-});
-socket.on('leave', function(socketId){
-  leave(socketId);
-});
 
-socket.on('connect', function(data) {
-  console.log('connect');
-  getLocalStream(true, function(stream) {
-    localStream = stream;
-    container.setState({selfViewSrc: stream.toURL()});
-    container.setState({status: 'ready', info: 'Please enter or create room ID'});
-  });
-});
 
 function logError(error) {
   console.log("logError", error);
@@ -241,10 +226,11 @@ function getStats() {
   }
 }
 
-let container;
 
-class RCTWebRTCDemo extends React.Component {
+
+class RCTWebRTCDemo extends Component {
   constructor(props){
+    console.log('get into constructor');
     super(props);
     this.state =  { 
       info: 'Initializing',
@@ -257,25 +243,52 @@ class RCTWebRTCDemo extends React.Component {
       textRoomData: [],
       textRoomValue: '',
     };
+    container = this;
   }
   _loadInitialState = async()=>{
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => true});
   }
   componentDidMount(){
+    console.log("get into did mount")
     console.log(this.props);
-    container = this;
+    
     this._loadInitialState().done();
+    const socket = io.connect('https://mozzaz-srv-mso-sched.azurewebsites.net', {transports: ['websocket']});
+    socket.on('exchange', function(data){
+      exchange(data);
+    });
+    socket.on('leave', function(socketId){
+      leave(socketId);
+    });
+    socket.on('error', (error)=>{
+      console.log('socket error')
+    });
+    socket.on('connect_error', (error)=>{
+      console.log('socket connect error')
+    })
+    socket.on('connect', function(data) {
+      console.log('connect');
+      getLocalStream(true, function(stream) {
+        localStream = stream;
+        container.setState({selfViewSrc: stream.toURL()});
+        container.setState({status: 'ready', info: 'Please enter or create room ID'});
+      });
+    });
   }
+  
  
-  _press(event) {
+  _press = (event) => {
     this.refs.roomID.blur();
     this.setState({status: 'connect', info: 'Connecting'});
     join(this.state.roomID);
   }
-  _switchVideoType() {
+  _switchVideoType= ()=> {
     const isFront = !this.state.isFront;
     this.setState({isFront});
-    getLocalStream(isFront, function(stream) {
+    const containertemp = this;
+    console.log("printing this -----")
+    console.log(this)
+    getLocalStream(isFront, (stream) => {
       if (localStream) {
         for (const id in pcPeers) {
           const pc = pcPeers[id];
@@ -284,20 +297,19 @@ class RCTWebRTCDemo extends React.Component {
         localStream.release();
       }
       localStream = stream;
-      container.setState({selfViewSrc: stream.toURL()});
-
+      containertemp.setState({selfViewSrc: stream.toURL()});
       for (const id in pcPeers) {
         const pc = pcPeers[id];
         pc && pc.addStream(localStream);
       }
     });
   }
-  receiveTextData(data) {
+  receiveTextData=(data)=> {
     const textRoomData = this.state.textRoomData.slice();
     textRoomData.push(data);
     this.setState({textRoomData, textRoomValue: ''});
   }
-  _textRoomPress() {
+  _textRoomPress=()=> {
     if (!this.state.textRoomValue) {
       return
     }
@@ -309,7 +321,7 @@ class RCTWebRTCDemo extends React.Component {
     }
     this.setState({textRoomData, textRoomValue: ''});
   }
-  _renderTextRoom() {
+  _renderTextRoom=()=> {
     return (
       <View style={styles.listViewContainer}>
         <ListView
